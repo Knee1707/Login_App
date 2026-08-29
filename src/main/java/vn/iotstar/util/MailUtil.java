@@ -29,6 +29,7 @@ public class MailUtil {
 
 	static {
 		Properties props = new Properties();
+		// 1) File đóng gói trong ứng dụng
 		try (InputStream in = MailUtil.class.getResourceAsStream("/email.properties")) {
 			if (in != null) {
 				props.load(in);
@@ -36,10 +37,25 @@ public class MailUtil {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		// 2) File cấu hình NGOÀI (đổi Gmail mà không cần build lại): trỏ bằng
+		//    biến môi trường MAIL_CONFIG hoặc -Dmail.config=<đường dẫn>. Giá trị ở
+		//    đây sẽ GHI ĐÈ file đóng gói.
+		String external = firstNonBlank(System.getProperty("mail.config"), System.getenv("MAIL_CONFIG"));
+		if (!external.isEmpty()) {
+			try (InputStream in = new java.io.FileInputStream(external)) {
+				props.load(in);
+				System.out.println("[MailUtil] Đã nạp cấu hình mail ngoài: " + external);
+			} catch (Exception e) {
+				System.out.println("[MailUtil] Không đọc được file cấu hình ngoài: " + external);
+			}
+		}
+
 		HOST = firstNonBlank(System.getenv("MAIL_HOST"), props.getProperty("mail.smtp.host"), "smtp.gmail.com");
 		PORT = firstNonBlank(System.getenv("MAIL_PORT"), props.getProperty("mail.smtp.port"), "587");
 		USERNAME = firstNonBlank(System.getenv("MAIL_USERNAME"), props.getProperty("mail.smtp.username"), "");
-		PASSWORD = firstNonBlank(System.getenv("MAIL_PASSWORD"), props.getProperty("mail.smtp.password"), "");
+		// App Password của Google hiển thị dạng "abcd efgh ijkl mnop" — bỏ hết dấu cách
+		PASSWORD = firstNonBlank(System.getenv("MAIL_PASSWORD"), props.getProperty("mail.smtp.password"), "")
+				.replace(" ", "");
 		FROM = firstNonBlank(System.getenv("MAIL_FROM"), props.getProperty("mail.smtp.from"), USERNAME);
 	}
 
