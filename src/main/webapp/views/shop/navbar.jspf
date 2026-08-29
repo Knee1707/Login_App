@@ -1,0 +1,20 @@
+<nav class="navbar">
+	<div class="navbar-inner">
+		<a class="brand" href="${pageContext.request.contextPath}/home">🛒 MyShop</a>
+		<div class="nav-links">
+			<a href="${pageContext.request.contextPath}/home">Trang chủ</a>
+			<a href="${pageContext.request.contextPath}/product">Sản phẩm</a>
+			<c:choose>
+				<c:when test="${not empty sessionScope.account}">
+					<span class="nav-user">Xin chào, <b>${empty sessionScope.account.fullname ? sessionScope.account.email : sessionScope.account.fullname}</b></span>
+					<a href="${pageContext.request.contextPath}/admin/categories">Quản lý</a>
+					<a href="${pageContext.request.contextPath}/logout">Đăng xuất</a>
+				</c:when>
+				<c:otherwise>
+					<a href="${pageContext.request.contextPath}/login">Đăng nhập</a>
+					<a href="${pageContext.request.contextPath}/register">Đăng ký</a>
+				</c:otherwise>
+			</c:choose>
+		</div>
+	</div>
+</nav>

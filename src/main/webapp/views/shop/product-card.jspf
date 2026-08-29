@@ -1,0 +1,17 @@
+<c:choose>
+	<c:when test="${fn:startsWith(p.image, 'https')}"><c:set var="pimg" value="${p.image}" /></c:when>
+	<c:otherwise><c:url value="/image?fname=${p.image}" var="pimg" /></c:otherwise>
+</c:choose>
+<div class="product-card">
+	<a href="<c:url value='/product/detail?id=${p.productId}'/>">
+		<div class="product-thumb"><img src="${pimg}" alt="${p.productName}" /></div>
+	</a>
+	<div class="product-body">
+		<div class="product-cat">${p.category.categoryname}</div>
+		<a href="<c:url value='/product/detail?id=${p.productId}'/>">
+			<div class="product-name">${p.productName}</div>
+		</a>
+		<div class="product-price"><fmt:formatNumber value="${p.price}" type="number" maxFractionDigits="0" /> đ</div>
+		<a class="btn btn-primary btn-sm" href="<c:url value='/product/detail?id=${p.productId}'/>">Xem chi tiết</a>
+	</div>
+</div>
