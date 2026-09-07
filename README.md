@@ -6,7 +6,11 @@ Ngoài CRUD `Category` (bài 2), đã bổ sung: **đăng ký + kích hoạt OTP
 (trang chủ 10 sản phẩm mới nhất, danh sách phân trang, trang chi tiết).
 
 ## Yêu cầu môi trường
-JDK 17+, Tomcat 10.1+/11, Maven, SQL Server (đã bật `sa` + TCP 1433).
+JDK 17+, **Tomcat 10.1** (xem lưu ý), Maven, SQL Server (đã bật `sa` + TCP 1433).
+
+> ⚠️ **Dùng Tomcat 10.1, KHÔNG dùng Tomcat 11.** Filter của SiteMesh 3 (Mục 1) chưa tương thích
+> Tomcat 11 / Servlet 6.1 (trang bị trả về rỗng — lỗi upstream còn mở
+> [sitemesh3#148](https://github.com/sitemesh/sitemesh3/issues/148)). Tomcat 10.1 vẫn là Jakarta EE 10.
 
 ## CSDL
 Dùng lại database **`CategoryCRUD`** (đã tạo). **Không cần viết SQL tạo bảng** — Hibernate tự tạo bảng `categories` và `Videos` ở lần chạy đầu (`hibernate.hbm2ddl.auto=update`).
@@ -16,8 +20,8 @@ Kết nối cấu hình trong `src/main/resources/META-INF/persistence.xml` (m�
 Khi thêm danh mục không chọn ảnh, hệ thống dùng `avatar.png`. Hãy để 1 file **`avatar.png`** trong `E:\upload` để ảnh mặc định không bị vỡ.
 
 ## Chạy
-Bấm đúp **`run.bat`** → mở `http://localhost:8081/Bai2JPA/` (tự chuyển tới `/admin/categories`).
-Tắt: **`stop.bat`**.
+Bấm đúp **`run.bat`** → mở `http://localhost:8089/Bai2JPA/` (chuyển tới trang chủ `/home`).
+Tắt: **`stop.bat`**. (run.bat đã trỏ sẵn Tomcat 10.1 ở `E:\Tools\apache-tomcat-10.1.59`, cổng 8089.)
 
 ## Cấu trúc (JPA + MVC)
 ```
@@ -65,8 +69,30 @@ File `src/main/resources/email.properties`:
 - **`/product/detail?id=`**: chi tiết 1 sản phẩm (bấm vào sản phẩm ở trang chủ hoặc trang product).
 
 ### Danh sách URL
-| Public | Admin (cần đăng nhập) |
+| Public | Cần đăng nhập |
 |---|---|
 | `/home`, `/product`, `/product/detail?id=` | `/admin/categories`, `/admin/category/...` |
 | `/register`, `/verify-otp`, `/login`, `/logout` | `/admin/products`, `/admin/product/...` |
-| `/forgot-password`, `/reset-password` | |
+| `/forgot-password`, `/reset-password` | `/profile` |
+
+## Bài tập bổ sung: Mục 1, 2, 3 (SiteMesh + Validation + Profile)
+
+### Mục 1 — SiteMesh 3 Decorator + 01 template Bootstrap
+- Cấu hình `ConfigurableSiteMeshFilter` trong `web.xml`, mapping trong `WEB-INF/sitemesh3.xml`.
+- Một template Bootstrap 5 duy nhất `WEB-INF/decorators/main.jsp` (navbar + footer) bao **mọi trang**
+  qua các thẻ `<sitemesh:write property="title|head|body"/>`.
+- Đường dẫn decorator dùng tương đối với prefix mặc định `/WEB-INF/decorators/` ⇒ ghi `decorator="main.jsp"`.
+
+### Mục 2 — Validation cho các form
+- Dùng **Bean Validation (Hibernate Validator)**: `@NotEmpty` trên `Category.categoryname`, `Product.productName`;
+  controller gọi `ValidationUtil.validate(bean)` trước khi lưu, lỗi hiển thị ngay trên form (giữ giá trị đã nhập).
+- `Product`: kiểm tra thêm giá ≥ 0, số lượng ≥ 0, phải chọn danh mục.
+- Form đăng ký/đăng nhập/OTP/quên–đặt lại mật khẩu: kiểm tra phía server, báo lỗi inline.
+- Form **Hồ sơ**: họ tên bắt buộc (2–100), SĐT đúng định dạng `0` + 9–10 số, ảnh JPG/PNG/GIF ≤ 2MB.
+
+### Mục 3 — Hồ sơ User (`/profile`) bằng JPA, giao diện SiteMesh
+- Bổ sung cột `Phone`, `Avatar` cho entity `User`.
+- `ProfileController` (`@MultipartConfig`): cập nhật **fullname, phone, ảnh** (upload multipart) qua JPA
+  (`IUserService.updateProfile`), dùng mẫu **PRG** + thông báo flash. Yêu cầu đăng nhập.
+- Ảnh lưu ở `Constant.DIR`, phục vụ qua `/image?fname=...` (dùng lại `DownloadImageController`).
+- Cập nhật xong đồng bộ lại `session.account` để navbar hiển thị tên mới.

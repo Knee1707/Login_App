@@ -114,6 +114,21 @@ public class UserServiceImpl implements IUserService {
 		return true;
 	}
 
+	@Override
+	public User updateProfile(int userId, String fullname, String phone, String avatarFileName) {
+		User user = userDao.findById(userId);
+		if (user == null) {
+			return null;
+		}
+		user.setFullname(fullname);
+		user.setPhone(phone);
+		if (avatarFileName != null) {
+			user.setAvatar(avatarFileName);
+		}
+		userDao.update(user);
+		return user;
+	}
+
 	private boolean isOtpValid(User user, String otp) {
 		return user != null
 				&& user.getOtp() != null

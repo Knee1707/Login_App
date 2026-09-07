@@ -28,6 +28,13 @@ public class User implements Serializable {
 	@Column(name = "Email", length = 150, nullable = false, unique = true)
 	private String email;
 
+	// Muc 3: bo sung cho chuc nang Profile
+	@Column(name = "Phone", length = 20)
+	private String phone;
+
+	@Column(name = "Avatar", length = 255)
+	private String avatar;
+
 	@Column(name = "Password", length = 255, nullable = false)
 	private String password;
 
@@ -67,6 +74,22 @@ public class User implements Serializable {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
 	}
 
 	public String getPassword() {

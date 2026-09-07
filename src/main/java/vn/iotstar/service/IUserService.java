@@ -30,4 +30,11 @@ public interface IUserService {
 
 	/** Đặt lại mật khẩu bằng OTP. Trả về true nếu thành công. */
 	boolean resetPassword(String email, String otp, String newRawPassword);
+
+	/**
+	 * Muc 3 - Cập nhật hồ sơ: fullname, phone và (tùy chọn) tên file avatar.
+	 * Nếu avatarFileName = null thì giữ nguyên avatar cũ.
+	 * @return User sau khi cập nhật, hoặc null nếu không tìm thấy.
+	 */
+	User updateProfile(int userId, String fullname, String phone, String avatarFileName);
 }
