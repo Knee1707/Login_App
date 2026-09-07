@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemesh>
+	<!-- Khong bao trang cho anh (noi dung nhi phan) -->
+	<mapping path="/image" exclude="true"/>
+
+	<!-- Template Bootstrap dung chung cho moi trang.
+	     Duong dan tuong doi voi prefix mac dinh "/WEB-INF/decorators/"
+	     => decorator that su la /WEB-INF/decorators/main.jsp -->
+	<mapping path="/*" decorator="main.jsp"/>
+</sitemesh>

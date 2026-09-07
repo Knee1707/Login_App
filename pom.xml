@@ -20,8 +20,15 @@
 		<dependency>
 			<groupId>jakarta.servlet</groupId>
 			<artifactId>jakarta.servlet-api</artifactId>
-			<version>6.1.0</version>
+			<version>6.0.0</version>
 			<scope>provided</scope>
+		</dependency>
+
+		<!-- Muc 1: SiteMesh 3 (ban Jakarta) - decorator quan ly giao dien -->
+		<dependency>
+			<groupId>org.sitemesh</groupId>
+			<artifactId>sitemesh</artifactId>
+			<version>3.3.0-RC1</version>
 		</dependency>
 
 		<dependency>

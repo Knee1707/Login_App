@@ -12,7 +12,6 @@
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 </head>
 <body>
-	<%@ include file="navbar.jspf" %>
 
 	<div class="container" style="max-width:1000px;">
 		<div class="auth-links" style="text-align:left; margin:0 0 14px;">

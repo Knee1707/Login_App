@@ -12,7 +12,6 @@
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 </head>
 <body>
-	<%@ include file="navbar.jspf" %>
 
 	<div class="container" style="max-width:1080px;">
 		<h1 class="section-title">Sản phẩm mới nhất</h1>

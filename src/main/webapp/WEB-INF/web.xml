@@ -10,6 +10,17 @@
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
 
+	<!-- Muc 1: SiteMesh 3 Decorator - bao moi trang bang template Bootstrap.
+	     Cau hinh mapping decorator dat trong /WEB-INF/sitemesh3.xml -->
+	<filter>
+		<filter-name>sitemesh</filter-name>
+		<filter-class>org.sitemesh.config.ConfigurableSiteMeshFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>sitemesh</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
 	<!-- Ép đọc mọi trang JSP và fragment .jspf bằng UTF-8 (sửa lỗi vỡ font tiếng Việt) -->
 	<jsp-config>
 		<jsp-property-group>

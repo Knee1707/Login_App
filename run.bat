@@ -3,12 +3,13 @@ chcp 65001 >nul
 title Chay Bai 2 (JPA) - CRUD Category
 setlocal
 
+REM  LUU Y: SiteMesh 3 (Muc 1) khong render duoc tren Tomcat 11 (Servlet 6.1) -> dung Tomcat 10.1
 set "JAVA_HOME=C:\Program Files\Java\jdk-26.0.2.1"
-set "CATALINA_HOME=E:\Tools\apache-tomcat-11.0.25"
+set "CATALINA_HOME=E:\Tools\apache-tomcat-10.1.59"
 set "PROJ=%~dp0"
 set "MVN=E:\Tools\apache-maven-3.9.16\bin\mvn.cmd"
 set "APP=Bai2JPA"
-set "PORT=8081"
+set "PORT=8089"
 
 echo [1/3] Build WAR (cho chut)...
 call "%MVN%" -f "%PROJ%pom.xml" clean package
