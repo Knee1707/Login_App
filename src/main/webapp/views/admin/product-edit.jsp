@@ -13,11 +13,15 @@
 	<div class="container container--narrow">
 		<div class="card">
 			<h2>Sửa sản phẩm</h2>
+			<c:if test="${not empty errors}">
+				<div class="alert alert-error">Vui lòng kiểm tra lại thông tin.</div>
+			</c:if>
 			<form action="${pageContext.request.contextPath}/admin/product/update" method="post" enctype="multipart/form-data">
 				<input type="hidden" name="productid" value="${prod.productId}" />
 				<div class="form-group">
 					<label>Tên sản phẩm</label>
-					<input class="form-control" type="text" name="productname" value="${prod.productName}" required />
+					<input class="form-control" type="text" name="productname" value="${prod.productName}" />
+					<c:if test="${not empty errors.productName}"><small style="color:#c0392b">${errors.productName}</small></c:if>
 				</div>
 				<div class="form-group">
 					<label>Giá (đ)</label>

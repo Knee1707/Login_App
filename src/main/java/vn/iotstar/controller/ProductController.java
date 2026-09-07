@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -23,6 +24,7 @@ import vn.iotstar.service.IProductService;
 import vn.iotstar.service.impl.CategoryServiceImpl;
 import vn.iotstar.service.impl.ProductServiceImpl;
 import vn.iotstar.util.Constant;
+import vn.iotstar.util.ValidationUtil;
 
 @MultipartConfig
 @WebServlet(urlPatterns = { "/admin/products", "/admin/product/add", "/admin/product/insert",
@@ -65,6 +67,16 @@ public class ProductController extends HttpServlet {
 		if (url.contains("/admin/product/insert")) {
 			Product product = new Product();
 			bindCommonFields(req, product);
+
+			Map<String, String> errors = validateProduct(product);
+			if (!errors.isEmpty()) {
+				req.setAttribute("prod", product);
+				req.setAttribute("errors", errors);
+				req.setAttribute("listcate", categoryService.findAll());
+				req.getRequestDispatcher("/views/admin/product-add.jsp").forward(req, resp);
+				return;
+			}
+
 			product.setCreatedDate(new Date());
 			product.setImage(resolveImageOnInsert(req));
 			productService.insert(product);
@@ -78,6 +90,16 @@ public class ProductController extends HttpServlet {
 			}
 			String fileold = product.getImage();
 			bindCommonFields(req, product);
+
+			Map<String, String> errors = validateProduct(product);
+			if (!errors.isEmpty()) {
+				req.setAttribute("prod", product);
+				req.setAttribute("errors", errors);
+				req.setAttribute("listcate", categoryService.findAll());
+				req.getRequestDispatcher("/views/admin/product-edit.jsp").forward(req, resp);
+				return;
+			}
+
 			product.setImage(resolveImageOnUpdate(req, fileold));
 			productService.update(product);
 			resp.sendRedirect(req.getContextPath() + "/admin/products");
@@ -95,6 +117,21 @@ public class ProductController extends HttpServlet {
 		int categoryid = parseInt(req.getParameter("categoryid"));
 		Category category = categoryService.findById(categoryid);
 		product.setCategory(category);
+	}
+
+	// Muc 2: kiem tra du lieu san pham (Bean Validation + rang buoc so hoc)
+	private Map<String, String> validateProduct(Product product) {
+		Map<String, String> errors = ValidationUtil.validate(product);
+		if (product.getPrice() < 0) {
+			errors.putIfAbsent("price", "Giá không được âm.");
+		}
+		if (product.getQuantity() < 0) {
+			errors.putIfAbsent("quantity", "Số lượng không được âm.");
+		}
+		if (product.getCategory() == null) {
+			errors.putIfAbsent("category", "Vui lòng chọn danh mục.");
+		}
+		return errors;
 	}
 
 	private String resolveImageOnInsert(HttpServletRequest req) throws IOException, ServletException {

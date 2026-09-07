@@ -13,11 +13,17 @@
 	<div class="container container--narrow">
 		<div class="card">
 			<h2>Sửa danh mục</h2>
+			<c:if test="${not empty errors}">
+				<div class="alert alert-error">Vui lòng kiểm tra lại thông tin.</div>
+			</c:if>
 			<form action="${pageContext.request.contextPath}/admin/category/update" method="post" enctype="multipart/form-data">
 				<input type="hidden" name="categoryid" value="${cate.categoryid}" />
 				<div class="form-group">
 					<label>Tên danh mục</label>
-					<input class="form-control" type="text" name="categoryname" value="${cate.categoryname}" required />
+					<input class="form-control" type="text" name="categoryname" value="${cate.categoryname}" />
+					<c:if test="${not empty errors.categoryname}">
+						<small style="color:#c0392b">${errors.categoryname}</small>
+					</c:if>
 				</div>
 				<div class="form-group">
 					<label>Link ảnh (URL)</label>

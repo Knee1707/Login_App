@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -19,6 +20,7 @@ import vn.iotstar.entity.Category;
 import vn.iotstar.service.ICategoryService;
 import vn.iotstar.service.impl.CategoryServiceImpl;
 import vn.iotstar.util.Constant;
+import vn.iotstar.util.ValidationUtil;
 
 @MultipartConfig
 @WebServlet(urlPatterns = { "/admin/categories", "/admin/category/add", "/admin/category/insert",
@@ -69,6 +71,15 @@ public class CategoryController extends HttpServlet {
 			category.setCategoryname(categoryname);
 			category.setStatus(status);
 
+			// Muc 2: validate truoc khi luu
+			Map<String, String> errors = ValidationUtil.validate(category);
+			if (!errors.isEmpty()) {
+				req.setAttribute("cate", category);
+				req.setAttribute("errors", errors);
+				req.getRequestDispatcher("/views/admin/category-add.jsp").forward(req, resp);
+				return;
+			}
+
 			String uploadPath = Constant.DIR;
 			File uploadDir = new File(uploadPath);
 			if (!uploadDir.exists()) {
@@ -107,6 +118,15 @@ public class CategoryController extends HttpServlet {
 			String fileold = category.getImages();
 			category.setCategoryname(categoryname);
 			category.setStatus(status);
+
+			// Muc 2: validate truoc khi luu
+			Map<String, String> errors = ValidationUtil.validate(category);
+			if (!errors.isEmpty()) {
+				req.setAttribute("cate", category);
+				req.setAttribute("errors", errors);
+				req.getRequestDispatcher("/views/admin/category-edit.jsp").forward(req, resp);
+				return;
+			}
 
 			String uploadPath = Constant.DIR;
 			File uploadDir = new File(uploadPath);
